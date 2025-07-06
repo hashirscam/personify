@@ -1,64 +1,164 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from crewai.agents.agent_builder.base_agent import BaseAgent
-from typing import List
-# If you want to run a snippet of code before or after the crew starts,
-# you can use the @before_kickoff and @after_kickoff decorators
-# https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+from crewai_tools import SerperDevTool
+from crewai.memory import LongTermMemory, ShortTermMemory, EntityMemory
+from crewai.memory.storage.rag_storage import RAGStorage
+from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
+
 
 @CrewBase
-class Personify():
-    """Personify crew"""
+class Personify(CrewBase):
+    """Personal Statement Writer Crew"""
 
-    agents: List[BaseAgent]
-    tasks: List[Task]
+    agents_config = 'config/agents.yaml'
+    tasks_config = 'config/tasks.yaml'
 
-    # Learn more about YAML configuration files here:
-    # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
-    # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
-    
-    # If you would like to add tools to your agents, you can learn more about it here:
-    # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
-    def researcher(self) -> Agent:
+    def personality_interviewer(self) -> Agent:
         return Agent(
-            config=self.agents_config['researcher'], # type: ignore[index]
-            verbose=True
+            config=self.agents_config['personality_interviewer'],
+            tools=[SerperDevTool()],
+            verbose=True,
+            memory=True
         )
 
     @agent
-    def reporting_analyst(self) -> Agent:
+    def technical_interviewer(self) -> Agent:
         return Agent(
-            config=self.agents_config['reporting_analyst'], # type: ignore[index]
-            verbose=True
+            config=self.agents_config['technical_interviewer'],
+            tools=[SerperDevTool()],
+            verbose=True,
+            memory=True
         )
 
-    # To learn more about structured task outputs,
-    # task dependencies, and task callbacks, check out the documentation:
-    # https://docs.crewai.com/concepts/tasks#overview-of-a-task
-    @task
-    def research_task(self) -> Task:
-        return Task(
-            config=self.tasks_config['research_task'], # type: ignore[index]
+    @agent
+    def best_statement_researcher(self) -> Agent:
+        return Agent(
+            config=self.agents_config['best_statement_researcher'],
+            tools=[SerperDevTool()],
+            verbose=True,
+            memory=True
+        )
+
+    @agent
+    def university_researcher(self) -> Agent:
+        return Agent(
+            config=self.agents_config['university_researcher'],
+            tools=[SerperDevTool()],
+            verbose=True,
+            memory=True
+        )
+
+    @agent
+    def statement_writer(self) -> Agent:
+        return Agent(
+            config=self.agents_config['statement_writer'],
+            verbose=True,
+            memory=True
+        )
+
+    @agent
+    def evaluator(self) -> Agent:
+        return Agent(
+            config=self.agents_config['evaluator'],
+            verbose=True,
+            memory=True
         )
 
     @task
-    def reporting_task(self) -> Task:
+    def conduct_personality_interview(self) -> Task:
         return Task(
-            config=self.tasks_config['reporting_task'], # type: ignore[index]
-            output_file='report.md'
+            config=self.tasks_config['conduct_personality_interview'],
+        )
+
+    @task
+    def conduct_technical_interview(self) -> Task:
+        return Task(
+            config=self.tasks_config['conduct_technical_interview'],
+        )
+
+    @task
+    def research_best_statements(self) -> Task:
+        return Task(
+            config=self.tasks_config['research_best_statements'],
+        )
+
+    @task
+    def research_university(self) -> Task:
+        return Task(
+            config=self.tasks_config['research_university'],
+        )
+
+    @task
+    def write_personal_statement(self) -> Task:
+        return Task(
+            config=self.tasks_config['write_personal_statement'],
+        )
+
+    @task
+    def evaluate_statement(self) -> Task:
+        return Task(
+            config=self.tasks_config['evaluate_statement'],
+        )
+
+    @task
+    def improve_statement(self) -> Task:
+        return Task(
+            config=self.tasks_config['improve_statement'],
+        )
+
+    @task
+    def coordinate_process(self) -> Task:
+        return Task(
+            config=self.tasks_config['coordinate_process'],
         )
 
     @crew
     def crew(self) -> Crew:
-        """Creates the Personify crew"""
-        # To learn how to add knowledge sources to your crew, check out the documentation:
-        # https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+        """Creates the Personal Statement Writer crew"""
+
+        coordinator = Agent(
+            config=self.agents_config['coordinator'],
+            allow_delegation=True
+        )
 
         return Crew(
-            agents=self.agents, # Automatically created by the @agent decorator
-            tasks=self.tasks, # Automatically created by the @task decorator
-            process=Process.sequential,
+            agents=self.agents,
+            tasks=self.tasks, 
+            process=Process.hierarchical,
             verbose=True,
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
+            manager_agent=coordinator,
+            memory=True,
+            # Long-term memory for persistent storage across sessions
+            long_term_memory = LongTermMemory(
+                storage=LTMSQLiteStorage(
+                    db_path="./memory/long_term_memory_storage.db"
+                )
+            ),
+            # Short-term memory for current context using RAG
+            short_term_memory = ShortTermMemory(
+                storage = RAGStorage(
+                        embedder_config={
+                            "provider": "openai",
+                            "config": {
+                                "model": 'text-embedding-3-small'
+                            }
+                        },
+                        type="short_term",
+                        path="./memory/"
+                    )
+                ),            # Entity memory for tracking key information about entities
+            entity_memory = EntityMemory(
+                storage=RAGStorage(
+                    embedder_config={
+                        "provider": "openai",
+                        "config": {
+                            "model": 'text-embedding-3-small'
+                        }
+                    },
+                    type="short_term",
+                    path="./memory/"
+                )
+            ),
         )
+

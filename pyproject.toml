@@ -2,10 +2,14 @@
 name = "personify"
 version = "0.1.0"
 description = "personify using crewAI"
-authors = [{ name = "Your Name", email = "you@example.com" }]
+authors = [{ name = "Hashirscam", email = "perfactorial@gmail.com" }]
 requires-python = ">=3.10,<3.14"
 dependencies = [
-    "crewai[tools]>=0.140.0,<1.0.0"
+    "crewai>=0.140.0,<1.0.0",
+    "requests>=2.31.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=4.9.0",
+    "python-dotenv>=1.0.0"
 ]
 
 [project.scripts]

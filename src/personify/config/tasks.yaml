@@ -1,17 +1,162 @@
-research_task:
-  description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
-  expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
-  agent: researcher
+conduct_personality_interview:
+    description: >
+        Conduct a comprehensive personality interview with the user. Ask 10 very descriptive and abstract 
+        questions that will reveal their personality, values, motivations, and personal story. 
+        Focus on questions that will help create an authentic and compelling personal statement.
 
-reporting_task:
-  description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
-  expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+        User Information:
+        - University: {university}
+        - Field: {field}
+        - Degree: {degree}
+        - Username: {username}
+
+        Store all interview responses in output/{username}/personality_interview.md
+    expected_output: >
+        A comprehensive personality interview with 10 thoughtful questions and detailed responses 
+        that reveal the user's character, motivations, and personal background.
+    agent: personality_interviewer
+    output_file: "output/{username}/personality_interview.md"
+
+conduct_technical_interview:
+    description: >
+        Conduct a comprehensive technical interview with the user. Ask 10 descriptive questions to 
+        understand their technical background, academic achievements, research experience, and 
+        technical skills relevant to their field of study.
+
+        User Information:
+        - University: {university}
+        - Field: {field}
+        - Degree: {degree}
+        - Username: {username}
+
+        Store all interview responses in output/{username}/technical_interview.md
+    expected_output: >
+        A comprehensive technical interview with 10 detailed questions and responses covering 
+        academic background, research experience, technical skills, and achievements.
+    agent: technical_interviewer
+    output_file: "output/{username}/technical_interview.md"
+
+research_best_statements:
+    description: >
+        Research and analyze the best personal statement examples, particularly focusing on cs-sop.notion.site 
+        and similar resources for computer science and related fields. Understand what makes statements 
+        exceptional, including structure, content, tone, and key elements.
+
+        Focus on:
+        - Structure and organization
+        - Content and storytelling
+        - Tone and voice
+        - Key elements that make statements successful
+        - Common mistakes to avoid
+
+        Append findings to output/best_practices.md (do not overwrite existing content)
+    expected_output: >
+        Comprehensive research findings on best personal statement practices, including structure, 
+        content, tone, and key elements that make statements successful.
+    agent: best_statement_researcher
+    output_file: "output/best_practices.md"
+
+research_university:
+    description: >
+        Research and understand the target university's programs, faculty, research areas, mission, 
+        values, and what they look for in students. Focus on aligning the personal statement with 
+        the university's expectations and culture.
+
+        University: {university}
+        Field: {field}
+        Degree: {degree}
+
+        Research areas to cover:
+        - University mission and values
+        - Program specifics and requirements
+        - Faculty research areas
+        - What they value in students
+        - Admission criteria and preferences
+        - Questions asked by the university in the personal statement
+
+        Append findings to output/universities/{university}.md (do not overwrite existing content)
+    expected_output: >
+        Comprehensive research on the target university including programs, faculty, research areas, 
+        mission, values, and what they look for in students.
+    agent: university_researcher
+    output_file: "output/universities/{university}.md"
+
+write_personal_statement:
+    description: >
+        Create a high-quality personal statement using all the gathered information. Combine the user's 
+        personality, technical background, and align with the university's expectations.
+
+        Use the following files for reference:
+        - output/{username}/personality_interview.md
+        - output/{username}/technical_interview.md
+        - output/best_practices.md
+        - output/universities/{university}.md
+
+        Requirements:
+        - Length: {word_count} words
+        - Professional yet human-like and authentic
+        - Aligned with university expectations
+        - Compelling narrative that tells the user's story
+        - Clear motivation and goals
+
+        Store the statement in output/{username}/personal_statement.md
+    expected_output: >
+        A high-quality personal statement that is professional, authentic, and compelling, 
+        meeting the specified word count and aligning with university expectations.
+    agent: statement_writer
+    output_file: "output/{username}/personal_statement.md"
+
+evaluate_statement:
+    description: >
+        Evaluate the generated personal statement against world-class standards. Analyze the statement 
+        for quality, effectiveness, and alignment with best practices.
+
+        Read the statement from output/{username}/personal_statement.md and evaluate it based on:
+        - Structure and organization
+        - Content and storytelling
+        - Professionalism and authenticity
+        - Alignment with university expectations
+        - Overall impact and persuasiveness
+
+        Provide detailed feedback and a score (1-10). If the score is below 8, provide specific 
+        recommendations for improvement.
+    expected_output: >
+        A detailed evaluation of the personal statement including a score (1-10), specific feedback, 
+        and recommendations for improvement if needed.
+    agent: evaluator
+    output_file: "output/{username}/evaluation.md"
+
+improve_statement:
+    description: >
+        Based on the evaluator's feedback, improve the personal statement to address any issues 
+        and enhance its quality. Use the evaluation feedback to make targeted improvements.
+
+        Read the evaluation from output/{username}/evaluation.md and the original statement from 
+        output/{username}/personal_statement.md to understand what needs to be improved.
+
+        Create an improved version that addresses the feedback while maintaining the core message 
+        and authenticity.
+    expected_output: >
+        An improved version of the personal statement that addresses the evaluator's feedback 
+        and enhances overall quality.
+    agent: statement_writer
+    output_file: "output/{username}/personal_statement_improved.md"
+
+coordinate_process:
+    description: >
+        Coordinate the entire personal statement writing process. Ensure all agents complete their 
+        tasks effectively and the final product meets high standards. Monitor the workflow and 
+        provide guidance as needed.
+
+        User Information:
+        - University: {university}
+        - Field: {field}
+        - Degree: {degree}
+        - Username: {username}
+        - Word Count: {word_count}
+        - Current Date: {current_date}
+    expected_output: >
+        Successful coordination of the personal statement writing process with all tasks completed 
+        and a high-quality final product delivered.
+    agent: coordinator
+    output_file: "output/{username}/process_summary.md"
