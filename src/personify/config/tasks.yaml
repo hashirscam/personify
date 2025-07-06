@@ -4,12 +4,6 @@ conduct_personality_interview:
         questions that will reveal their personality, values, motivations, and personal story. 
         Focus on questions that will help create an authentic and compelling personal statement.
 
-        User Information:
-        - University: {university}
-        - Field: {field}
-        - Degree: {degree}
-        - Username: {username}
-
         Store all interview responses in output/{username}/personality_interview.md
     expected_output: >
         A comprehensive personality interview with 10 thoughtful questions and detailed responses 
