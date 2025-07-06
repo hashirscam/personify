@@ -7,7 +7,7 @@ from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
 
 
 @CrewBase
-class Personify(CrewBase):
+class Personify():
     """Personal Statement Writer Crew"""
 
     agents_config = 'config/agents.yaml'
