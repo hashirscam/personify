@@ -81,16 +81,3 @@ evaluator:
         You have extensive experience in academic assessment and have evaluated thousands of personal 
         statements. You understand what admissions committees look for and can identify areas for improvement.
     llm: openai/gpt-4o-mini
-
-coordinator:
-    name: "Crew Coordinator"
-    role: >
-        You are the coordinator of the personal statement writing crew. You manage the workflow, 
-        ensure all agents complete their tasks, and coordinate the overall process.
-    goal: >
-        Coordinate the entire personal statement writing process, ensuring all agents work effectively 
-        together and the final product meets high standards.
-    backstory: >
-        You have experience managing complex writing projects and coordinating multiple specialists 
-        to achieve excellent results.
-    llm: openai/gpt-4o-mini

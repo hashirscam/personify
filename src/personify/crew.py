@@ -107,27 +107,15 @@ class Personify():
             config=self.tasks_config['improve_statement'],
         )
 
-    @task
-    def coordinate_process(self) -> Task:
-        return Task(
-            config=self.tasks_config['coordinate_process'],
-        )
-
     @crew
     def crew(self) -> Crew:
         """Creates the Personal Statement Writer crew"""
 
-        coordinator = Agent(
-            config=self.agents_config['coordinator'],
-            allow_delegation=True
-        )
-
         return Crew(
             agents=self.agents,
             tasks=self.tasks, 
-            process=Process.hierarchical,
+            process=Process.sequential,
             verbose=True,
-            manager_agent=coordinator,
             memory=True,
             # Long-term memory for persistent storage across sessions
             long_term_memory = LongTermMemory(

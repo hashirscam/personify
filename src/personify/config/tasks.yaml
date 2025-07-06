@@ -141,22 +141,3 @@ improve_statement:
         and enhances overall quality.
     agent: statement_writer
     output_file: "output/{username}/personal_statement_improved.md"
-
-coordinate_process:
-    description: >
-        Coordinate the entire personal statement writing process. Ensure all agents complete their 
-        tasks effectively and the final product meets high standards. Monitor the workflow and 
-        provide guidance as needed.
-
-        User Information:
-        - University: {university}
-        - Field: {field}
-        - Degree: {degree}
-        - Username: {username}
-        - Word Count: {word_count}
-        - Current Date: {current_date}
-    expected_output: >
-        Successful coordination of the personal statement writing process with all tasks completed 
-        and a high-quality final product delivered.
-    agent: coordinator
-    output_file: "output/{username}/process_summary.md"
