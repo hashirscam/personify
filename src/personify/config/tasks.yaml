@@ -5,9 +5,11 @@ conduct_personality_interview:
         Focus on questions that will help create an authentic and compelling personal statement.
 
         Store all interview responses in output/{username}/personality_interview.md
+        YOU ARE NOT ALLOWED TO SAVE THE INTERVIEW WITHOUT GETTING THE RESPONSE FROM THE USER.
     expected_output: >
         A comprehensive personality interview with 10 thoughtful questions and detailed responses 
         that reveal the user's character, motivations, and personal background.
+        If for any reason you are not able to get the response from the user, you should not save the interview.
     agent: personality_interviewer
     output_file: "output/{username}/personality_interview.md"
 
@@ -24,9 +26,11 @@ conduct_technical_interview:
         - Username: {username}
 
         Store all interview responses in output/{username}/technical_interview.md
+        YOU ARE NOT ALLOWED TO SAVE THE INTERVIEW WITHOUT GETTING THE RESPONSE FROM THE USER.
     expected_output: >
         A comprehensive technical interview with 10 detailed questions and responses covering 
         academic background, research experience, technical skills, and achievements.
+        If for any reason you are not able to get the response from the user, you should not save the interview.
     agent: technical_interviewer
     output_file: "output/{username}/technical_interview.md"
 
